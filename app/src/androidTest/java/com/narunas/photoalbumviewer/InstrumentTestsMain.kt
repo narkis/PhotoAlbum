@@ -1,7 +1,11 @@
 package com.narunas.photoalbumviewer
 
+import android.arch.lifecycle.ViewModelProviders
+import android.util.Log
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import androidx.test.rule.logging.AtraceLogger
+import com.narunas.photoalbumviewer.viewmodel.CommonViewModel
 import com.narunas.simpledetailtest.base.BaseApplicationTest
 import junit.framework.TestCase.assertEquals
 import org.junit.After
@@ -13,12 +17,13 @@ import org.junit.runner.RunWith
 @RunWith(AndroidJUnit4::class)
 class InstrumentTestsMain: BaseApplicationTest<MainActivity>(MainActivity::class.java) {
 
-    lateinit var app : App
+    private val appContext = ApplicationProvider.getApplicationContext<PhotoAlbumApp>()
+    lateinit var  mainActivity: MainActivity
 
     @Before
     fun setUp() {
 
-        app = ApplicationProvider.getApplicationContext()
+        mainActivity = testRule.activity
 
     }
 
@@ -32,7 +37,24 @@ class InstrumentTestsMain: BaseApplicationTest<MainActivity>(MainActivity::class
     @Test
     fun domainContext() {
 
-        assertEquals(R.string.domain, app.packageName)
+        assertEquals(appContext.resources.getString(R.string.domain), appContext.packageName)
+    }
+
+    @Test
+    fun checkHttpRequest() {
+
+        val model = ViewModelProviders.of(mainActivity).get(CommonViewModel::class.java)
+        val resource: StringBuffer? = model.fetchJsonData()
+        /** transaction too large exception **/
+//        assertEquals("http fetch returned null", resource, null)
+
+    }
+
+    @Test
+    fun checkReturnedDataParsing() {
+
+        val model = ViewModelProviders.of(mainActivity).get(CommonViewModel::class.java)
+        model.buildCatalog()
     }
 
 }
