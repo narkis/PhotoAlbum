@@ -12,6 +12,7 @@ import org.junit.After
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
+import kotlin.concurrent.thread
 
 
 @RunWith(AndroidJUnit4::class)
@@ -44,9 +45,10 @@ class InstrumentTestsMain: BaseApplicationTest<MainActivity>(MainActivity::class
     fun checkHttpRequest() {
 
         val model = ViewModelProviders.of(mainActivity).get(CommonViewModel::class.java)
-        val resource: StringBuffer? = model.fetchJsonData()
-        /** transaction too large exception **/
-//        assertEquals("http fetch returned null", resource, null)
+
+        thread {
+            model.fetchJsonData()
+        }
 
     }
 
@@ -54,7 +56,11 @@ class InstrumentTestsMain: BaseApplicationTest<MainActivity>(MainActivity::class
     fun checkReturnedDataParsing() {
 
         val model = ViewModelProviders.of(mainActivity).get(CommonViewModel::class.java)
-        model.buildCatalog()
+
+        thread {
+            model.buildCatalog()
+        }
+
     }
 
 }

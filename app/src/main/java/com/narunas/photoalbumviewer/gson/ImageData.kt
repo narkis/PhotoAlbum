@@ -5,6 +5,9 @@ import com.google.gson.annotations.SerializedName
 
 data class ImageData(var timeStamp: Long) {
 
+    @SerializedName("albumId")
+    var albumId: Int = -1
+
     @SerializedName("id")
     var imageId: Int = -1
 
@@ -16,7 +19,4 @@ data class ImageData(var timeStamp: Long) {
 
     @SerializedName("thumbnailUrl")
     var thumbUrl: String = ""
-
-
-    var parentAlbumId: Int = -1
 }

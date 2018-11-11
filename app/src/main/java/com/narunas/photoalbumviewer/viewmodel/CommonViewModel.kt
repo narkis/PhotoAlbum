@@ -4,23 +4,33 @@ import android.arch.lifecycle.MutableLiveData
 import android.arch.lifecycle.ViewModel
 import android.util.Log
 import com.google.gson.Gson
-import com.narunas.photoalbumviewer.gson.AlbumData
 import com.narunas.photoalbumviewer.gson.ImageData
-import com.narunas.photoalbumviewer.gson.PhotoData
 import java.io.BufferedReader
 import java.io.InputStreamReader
 import java.net.HttpURLConnection
 import java.net.URL
-import java.net.URLEncoder
-import kotlin.concurrent.thread
+
+
+enum class UI_VERSION {
+    none,
+    single,
+    tabs,
+    pager
+}
 
 class CommonViewModel: ViewModel() {
 
-    private var SOURCE_URL = "http://jsonplaceholder.typicode.com/photos"
+    /** UI switch **/
+    var APP_UI = UI_VERSION.single
+
+    var SOURCE_URL = "http://jsonplaceholder.typicode.com/photos"
+
+
+
     companion object {
 
         val TAG:String = CommonViewModel::class.java.simpleName
-        val AlbumData: MutableLiveData<ArrayList<AlbumData>> = MutableLiveData()
+        val AlbumData: MutableLiveData<HashMap<Int, ArrayList<ImageData>>> = MutableLiveData()
         val ImageInReview: MutableLiveData<ImageData> = MutableLiveData()
         val ErrorData: MutableLiveData<String> = MutableLiveData()
     }
@@ -28,22 +38,48 @@ class CommonViewModel: ViewModel() {
 
     init {
 
+
     }
 
-
+    /**
+     *  MUST be called from a separate thread
+     *  @params = nothing
+     */
     fun buildCatalog() {
-
-        thread {
 
             val resources: StringBuffer? = fetchJsonData()
             val gson = Gson()
             val imageArray: Array<ImageData> = gson.fromJson(resources.toString(), Array<ImageData>::class.java)
-            for(i in 1..imageArray.size) {
 
-                Log.d(TAG, imageArray[i].title)
+            Log.d(TAG, " ---------- data size ${imageArray.size}")
+
+            val map = HashMap<Int, ArrayList<ImageData>>()
+
+            val iterator = imageArray.iterator()
+
+            iterator.forEach {
+
+                val key = it.albumId
+                if(map.containsKey(key)) {
+                    map.getValue(key).add(it)
+                } else {
+                    val value = ArrayList<ImageData>()
+                    value.add(it)
+                    map.put(key, value)
+                }
 
             }
-        }
+
+            if(!map.isEmpty()) {
+
+                AlbumData.postValue(map)
+
+            } else {
+
+                ErrorData.postValue("Photo albums not available")
+            }
+
+            Log.d(TAG, "....... album size:  ${map.size}")
 
     }
 
@@ -67,9 +103,7 @@ class CommonViewModel: ViewModel() {
                 }
             }
 
-
             BufferedReader(InputStreamReader(inputStream)).use {
-
 
                 response = StringBuffer()
                 var inputLine = it.readLine()
