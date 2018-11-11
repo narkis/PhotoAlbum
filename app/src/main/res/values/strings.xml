@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">PhotoAlbumViewer</string>
+    <string name="domain">com.narunas.photoalbumviewer</string>
 </resources>
