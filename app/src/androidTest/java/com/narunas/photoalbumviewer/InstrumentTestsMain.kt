@@ -1,10 +1,8 @@
 package com.narunas.photoalbumviewer
 
 import android.arch.lifecycle.ViewModelProviders
-import android.util.Log
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import androidx.test.rule.logging.AtraceLogger
 import com.narunas.photoalbumviewer.viewmodel.CommonViewModel
 import com.narunas.simpledetailtest.base.BaseApplicationTest
 import junit.framework.TestCase.assertEquals

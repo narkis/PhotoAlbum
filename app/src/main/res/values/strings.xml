@@ -1,5 +1,5 @@
 <resources>
     <string name="app_name">PhotoAlbumViewer</string>
     <string name="domain">com.narunas.photoalbumviewer</string>
-    <string name="album">photo album:</string>
+    <string name="album">photo album: </string>
 </resources>

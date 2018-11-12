@@ -20,8 +20,8 @@ enum class UI_VERSION {
 
 class CommonViewModel: ViewModel() {
 
-    /** UI switch **/
-    var APP_UI = UI_VERSION.single
+
+
 
     var SOURCE_URL = "http://jsonplaceholder.typicode.com/photos"
 
@@ -32,7 +32,16 @@ class CommonViewModel: ViewModel() {
         val TAG:String = CommonViewModel::class.java.simpleName
         val AlbumData: MutableLiveData<HashMap<Int, ArrayList<ImageData>>> = MutableLiveData()
         val ImageInReview: MutableLiveData<ImageData> = MutableLiveData()
+        val AlbumInReview: MutableLiveData<ArrayList<ImageData>> = MutableLiveData()
         val ErrorData: MutableLiveData<String> = MutableLiveData()
+
+        /** UI switch
+         *  here we can swith from a single view to a pager view
+         *  This should reside in either a setting menu and shared preferences
+         *  **/
+//        var APP_UI = UI_VERSION.pager
+        var APP_UI = UI_VERSION.single
+        /** end switch **/
     }
 
 

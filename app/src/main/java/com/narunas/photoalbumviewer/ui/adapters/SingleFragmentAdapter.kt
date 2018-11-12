@@ -15,10 +15,16 @@ import android.widget.GridView
 import android.widget.TextView
 import com.narunas.photoalbumviewer.DetailsActivity
 import com.narunas.photoalbumviewer.MainActivity
+import com.narunas.photoalbumviewer.PagerActivity
+import com.narunas.photoalbumviewer.PagerActivity.Companion.ACT_IMG
 import com.narunas.photoalbumviewer.R
 import com.narunas.photoalbumviewer.gson.ImageData
 import com.narunas.photoalbumviewer.ui.common.BaseImageView
+import com.narunas.photoalbumviewer.viewmodel.CommonViewModel.Companion.APP_UI
+import com.narunas.photoalbumviewer.viewmodel.CommonViewModel.Companion.AlbumInReview
+import com.narunas.photoalbumviewer.viewmodel.CommonViewModel.Companion.ErrorData
 import com.narunas.photoalbumviewer.viewmodel.CommonViewModel.Companion.ImageInReview
+import com.narunas.photoalbumviewer.viewmodel.UI_VERSION
 import java.lang.StringBuilder
 
 class SingleFragmentAdapter: RecyclerView.Adapter<RecyclerView.ViewHolder>() {
@@ -108,14 +114,30 @@ class SingleFragmentAdapter: RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
                 holder.image.imageSource(dataSet[position].thumbUrl, true)
 
-
                 holder.image.setOnClickListener {
 
-                    ImageInReview.postValue(dataSet[position])
+                    /** switch for single / pager detail view **/
+                    when(APP_UI) {
+                        UI_VERSION.single -> {
 
-                    val intent = Intent(holder.itemView.context, DetailsActivity::class.java)
-                    holder.itemView.context.startActivity(intent)
+                            ImageInReview.postValue(dataSet[position])
+                            val intent = Intent(holder.itemView.context, DetailsActivity::class.java)
+                            holder.itemView.context.startActivity(intent)
 
+                        }
+                        UI_VERSION.pager -> {
+
+                            AlbumInReview.postValue(dataSet)
+                            val intent = Intent(holder.itemView.context, PagerActivity::class.java)
+                            intent.putExtra(ACT_IMG, position)
+                            holder.itemView.context.startActivity(intent)
+
+                        } else -> {
+
+                            ErrorData.postValue(" Error viewing content ")
+                        }
+
+                    }
                 }
             }
         }
