@@ -1,6 +1,9 @@
 package com.narunas.photoalbumviewer.ui.adapters
 
 import android.content.Intent
+import android.support.v4.app.ActivityCompat
+import android.support.v4.app.ActivityOptionsCompat
+import android.support.v4.util.Pair
 import android.support.v7.widget.GridLayout
 import android.support.v7.widget.GridLayoutManager
 import android.support.v7.widget.RecyclerView
@@ -11,10 +14,12 @@ import android.widget.BaseAdapter
 import android.widget.GridView
 import android.widget.TextView
 import com.narunas.photoalbumviewer.DetailsActivity
+import com.narunas.photoalbumviewer.MainActivity
 import com.narunas.photoalbumviewer.R
 import com.narunas.photoalbumviewer.gson.ImageData
 import com.narunas.photoalbumviewer.ui.common.BaseImageView
 import com.narunas.photoalbumviewer.viewmodel.CommonViewModel.Companion.ImageInReview
+import java.lang.StringBuilder
 
 class SingleFragmentAdapter: RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
@@ -34,18 +39,23 @@ class SingleFragmentAdapter: RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     }
 
     override fun getItemCount(): Int {
-       return dataMap.entries.size
+       return dataMap.size
     }
 
-    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, key: Int) {
+    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
 
         if(holder is SingleAlbumViewHolder) {
 
+            /** albums are not zero index, adapter data is **/
+            val albumKey = position + 1
+            val imageData = dataMap.get(albumKey)
 
-            holder.albumIndex.text = holder.itemView.context.resources.getString(R.string.album) + " " + key.toString()
+            val sb = StringBuilder()
+            sb.append(holder.itemView.resources.getString(R.string.album)).append(albumKey)
+            holder.albumIndex.text = sb.toString()
 
             val gridAdapter = GridAdapter()
-            gridAdapter.updateData(dataMap.getValue(key+1))
+            gridAdapter.updateData(imageData!!)
 
             val gridLm = GridLayoutManager(
                 holder.itemView.context,
@@ -97,9 +107,12 @@ class SingleFragmentAdapter: RecyclerView.Adapter<RecyclerView.ViewHolder>() {
             if(holder is ImageViewHolder) {
 
                 holder.image.imageSource(dataSet[position].thumbUrl, true)
+
+
                 holder.image.setOnClickListener {
 
                     ImageInReview.postValue(dataSet[position])
+
                     val intent = Intent(holder.itemView.context, DetailsActivity::class.java)
                     holder.itemView.context.startActivity(intent)
 

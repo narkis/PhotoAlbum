@@ -54,7 +54,6 @@ class CommonViewModel: ViewModel() {
             Log.d(TAG, " ---------- data size ${imageArray.size}")
 
             val map = HashMap<Int, ArrayList<ImageData>>()
-
             val iterator = imageArray.iterator()
 
             iterator.forEach {

@@ -10,7 +10,6 @@ import kotlinx.android.synthetic.main.activity_detail.*
 
 class DetailsActivity: AppCompatActivity() {
 
-
     private lateinit var imageHolder: BaseImageView
     private var dataObserver = Observer<ImageData> {
         it?.let {
@@ -19,11 +18,13 @@ class DetailsActivity: AppCompatActivity() {
     }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+
         setContentView(R.layout.activity_detail)
 
         imageHolder = findViewById(R.id.main_image)
-    }
 
+    }
 
     override fun onResume() {
         super.onResume()
@@ -41,4 +42,5 @@ class DetailsActivity: AppCompatActivity() {
         imageHolder.imageSource(data.mainUrl, true)
         image_description.text = data.title
     }
+
 }
