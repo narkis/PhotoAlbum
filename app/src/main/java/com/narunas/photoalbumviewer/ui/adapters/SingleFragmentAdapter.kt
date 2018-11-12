@@ -47,10 +47,13 @@ class SingleFragmentAdapter: RecyclerView.Adapter<RecyclerView.ViewHolder>() {
             val gridAdapter = GridAdapter()
             gridAdapter.updateData(dataMap.getValue(key+1))
 
-            val gridLm = GridLayoutManager(holder.itemView.context, 3, GridLayoutManager.VERTICAL, false)
+            val gridLm = GridLayoutManager(
+                holder.itemView.context,
+                holder.itemView.resources.getInteger(R.integer.column_count),
+                GridLayoutManager.VERTICAL,
+                false)
+
             holder.grid.layoutManager = gridLm
-
-
             holder.grid.adapter = gridAdapter
 
         }
